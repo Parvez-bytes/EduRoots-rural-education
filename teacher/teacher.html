@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - EduRoots</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #0b0b2b, #1b2735 70%, #090a0f);
+            color: #fff;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            color: #d3d84d;
+            text-shadow: 0 0 10px rgba(211, 216, 77, 0.5);
+        }
+
+        .logo i {
+            color: #d3d84d;
+            font-size: 2.2rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+        }
+
+        .user-info img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #d3d84d;
+        }
+
+        .user-details h3 {
+            font-size: 1rem;
+            margin-bottom: 3px;
+        }
+
+        .user-details p {
+            font-size: 0.8rem;
+            color: #d3d84d;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .nav-item {
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+            color: #333;
+        }
+
+        .nav-item.active {
+            background: rgba(211, 216, 77, 0.3);
+            color: #d3d84d;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Dashboard Section */
+        .grades-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .grade-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .grade-btn:hover {
+            background: rgba(211, 216, 77, 0.3);
+        }
+
+        .grade-btn.active {
+            background: rgba(211, 216, 77, 0.5);
+        }
+
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .student-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+        }
+
+        .student-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .student-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            background: linear-gradient(to right, #0dca06, #73ff0e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .student-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .student-id {
+            color: #d3d84d;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        .student-score {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Student Progress Section */
+        .progress-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .progress-subject {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-subject:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+
+        .subject-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .subject-title {
+            font-weight: 600;
+            color: #d3d84d;
+            font-size: 18px;
+        }
+
+        .subject-score {
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            position: relative;
+            transition: width 1.5s ease;
+        }
+
+        .science .progress-fill {
+            background: linear-gradient(to right, #0dca06, #73ff0e);
+            width: 85%;
+        }
+
+        .technology .progress-fill {
+            background: linear-gradient(to right, #25777d, #051f43);
+            width: 92%;
+        }
+
+        .engineering .progress-fill {
+            background: linear-gradient(to right, #8c06ca, #451e4a);
+            width: 78%;
+        }
+
+        .math .progress-fill {
+            background: linear-gradient(to right, #21150e, #0de995);
+            width: 90%;
+        }
+
+        .chart-container {
+            margin-top: 30px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Report Section */
+        .report-options {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-option {
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+            text-align: center;
+            flex: 1;
+        }
+
+        .report-option:hover {
+            background: rgba(211, 216, 77, 0.3);
+        }
+
+        .report-option.active {
+            background: rgba(211, 216, 77, 0.5);
+        }
+
+        .report-option i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #d3d84d;
+        }
+
+        .report-option h3 {
+            margin-bottom: 10px;
+            color: #d3d84d;
+        }
+
+        .insight-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(5px);
+        }
+
+        .insight-card h3 {
+            color: #d3d84d;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .insight-card i {
+            color: #ff7e5f;
+        }
+
+        .problem-list {
+            list-style-type: none;
+        }
+
+        .problem-list li {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .problem-list li:last-child {
+            border-bottom: none;
+        }
+
+        .problem-name {
+            font-weight: 600;
+        }
+
+        .problem-count {
+            background: rgba(255, 126, 95, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            color: #ff7e5f;
+        }
+
+        /* Language Selector */
+        #languageSwitcher {
+            height: 2.5rem;
+            width: 10rem;
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            padding: 0 0.5rem;
+            border: none;
+            border-radius: 50px;
+            background-color: rgba(97, 97, 136, 0.5);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        #languageSwitcher:hover {
+            background-color: rgba(133, 146, 96, 0.7);
+        }
+
+        #languageSwitcher option {
+            background-color: #616188;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Language Selector -->
+    <select id="languageSwitcher">
+        <option value="en">English</option>
+        <option value="hi">हिंदी</option>
+        <option value="or">Odia</option>
+    </select>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>EduRoots Teacher Dashboard</h1>
+            </div>
+        </header>
+
+        <nav>
+            <a href="#" class="nav-item" data-target="home"><i class="fas fa-home"></i> HOME</a>
+            <a href="#" class="nav-item active" data-target="dashboard"><i class="fas fa-tachometer-alt"></i> DASHBOARD</a>
+            <a href="#" class="nav-item" data-target="report"><i class="fas fa-chart-bar"></i> REPORT</a>
+            <a href="#" class="nav-item" data-target="logout"><i class="fas fa-sign-out-alt"></i> LOGOUT</a>
+        </nav>
+
+        <!-- Home Section -->
+        <div id="home" class="content-section">
+            <div class="welcome-message">
+                <h2>Welcome to EduRoots Teacher Dashboard</h2>
+                <p>Monitor student progress, generate reports, and identify learning gaps</p>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="content-section active">
+            <h2>Student Management</h2>
+            <p>Select a grade to view students</p>
+            
+            <div class="grades-container">
+                <button class="grade-btn active" data-grade="6">Grade 6</button>
+                <button class="grade-btn" data-grade="7">Grade 7</button>
+                <button class="grade-btn" data-grade="8">Grade 8</button>
+                <button class="grade-btn" data-grade="9">Grade 9</button>
+                <button class="grade-btn" data-grade="10">Grade 10</button>
+                <button class="grade-btn" data-grade="10">Grade 11</button>
+                <button class="grade-btn" data-grade="10">Grade 12</button>
+            </div>
+            
+            <div class="students-grid">
+                <!-- Student cards will be generated here -->
+            </div>
+            
+            <!-- Student Progress Section (initially hidden) -->
+            <div id="student-progress" class="progress-section" style="display: none;">
+                <div class="progress-header">
+                    <h2><i class="fas fa-chart-line"></i> Progress for <span id="student-name">Student Name</span></h2>
+                    <button class="back-button" id="back-to-students">
+                        <i class="fas fa-arrow-left"></i> Back to Students
+                    </button>
+                </div>
+                
+                <div class="progress-grid">
+                    <div class="progress-subject science">
+                        <div class="subject-header">
+                            <div class="subject-title">Science</div>
+                            <div class="subject-score">85%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                    <div class="progress-subject technology">
+                        <div class="subject-header">
+                            <div class="subject-title">Technology</div>
+                            <div class="subject-score">92%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                    <div class="progress-subject engineering">
+                        <div class="subject-header">
+                            <div class="subject-title">Engineering</div>
+                            <div class="subject-score">78%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                    <div class="progress-subject math">
+                        <div class="subject-header">
+                            <div class="subject-title">Math</div>
+                            <div class="subject-score">90%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="progress-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Section -->
+        <div id="report" class="content-section">
+            <h2>Class Performance Reports</h2>
+            <p>Analyze overall class performance and identify problem areas</p>
+            
+            <div class="report-options">
+                <div class="report-option active" data-report="performance">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Performance Overview</h3>
+                    <p>View student rankings by grade</p>
+                </div>
+                <div class="report-option" data-report="insights">
+                    <i class="fas fa-lightbulb"></i>
+                    <h3>AI Insights</h3>
+                    <p>Identify learning challenges</p>
+                </div>
+            </div>
+            
+            <!-- Performance Report -->
+            <div id="performance-report" class="report-content">
+                <div class="grades-container">
+                    <button class="grade-btn active" data-grade="6">Grade 6</button>
+                    <button class="grade-btn" data-grade="7">Grade 7</button>
+                    <button class="grade-btn" data-grade="8">Grade 8</button>
+                    <button class="grade-btn" data-grade="9">Grade 9</button>
+                    <button class="grade-btn" data-grade="10">Grade 10</button>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="performance-chart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Insights Report -->
+            <div id="insights-report" class="report-content" style="display: none;">
+                <div class="insight-card">
+                    <h3><i class="fas fa-exclamation-circle"></i> Coordinate Geometry Challenges</h3>
+                    <p>Based on student performance in the Coordinates game, the following concepts are proving difficult:</p>
+                    
+                    <ul class="problem-list">
+                        <li>
+                            <span class="problem-name">Plotting points in all four quadrants</span>
+                            <span class="problem-count">12 students struggling</span>
+                        </li>
+                        <li>
+                            <span class="problem-name">Understanding negative coordinates</span>
+                            <span class="problem-count">8 students struggling</span>
+                        </li>
+                        <li>
+                            <span class="problem-name">Calculating distance between points</span>
+                            <span class="problem-count">15 students struggling</span>
+                        </li>
+                        <li>
+                            <span class="problem-name">Identifying coordinates from graphs</span>
+                            <span class="problem-count">10 students struggling</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="insight-card">
+                    <h3><i class="fas fa-lightbulb"></i> Recommended Actions</h3>
+                    <p>Based on the analysis, we recommend:</p>
+                    <ul class="problem-list">
+                        <li>Schedule a special session on coordinate geometry for Grade 8</li>
+                        <li>Provide additional practice problems for struggling students</li>
+                        <li>Use visual aids to explain negative coordinates</li>
+                        <li>Create peer learning groups for coordinate concepts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout Section -->
+        <div id="logout" class="content-section">
+            <div class="logout-confirm">
+                <h2><i class="fas fa-sign-out-alt"></i> Logout</h2>
+                <p>Are you sure you want to logout?</p>
+                <button class="btn-logout">Confirm Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample student data
+        const students = {
+            6: [
+                { id: 1, name: "Mulla Kammran", initials: "MC", scores: { science: 85, technology: 92, engineering: 78, math: 90 } },
+                { id: 2, name: "Sayyad Taha", initials: "ST", scores: { science: 78, technology: 85, engineering: 82, math: 88 } },
+                { id: 3, name: "Shah Zabiullah", initials: "SZ", scores: { science: 92, technology: 88, engineering: 85, math: 94 } },
+                { id: 4, name: "John Snow", initials: "JS", scores: { science: 75, technology: 80, engineering: 70, math: 82 } },
+                { id: 5, name: "Sayyed Javheriya", initials: "SJ", scores: { science: 88, technology: 90, engineering: 84, math: 91 } },
+                { id: 6, name: "Soudagar Owais", initials: "SM", scores: { science: 82, technology: 79, engineering: 76, math: 85 } },
+                { id: 7, name: "Patel Parvez", initials: "PP", scores: { science: 90, technology: 93, engineering: 88, math: 92 } },
+                { id: 8, name: "Sandeep Singh", initials: "SS", scores: { science: 79, technology: 84, engineering: 80, math: 87 } },
+                { id: 9, name: "Majid Chaugule", initials: "MC", scores: { science: 85, technology: 87, engineering: 83, math: 89 } },
+                { id: 10, name: "Mason Thomas", initials: "MT", scores: { science: 80, technology: 82, engineering: 75, math: 84 } }
+            ],
+            7: [
+                { id: 11, name: "Mia Jackson", initials: "MJ", scores: { science: 87, technology: 90, engineering: 82, math: 89 } },
+                { id: 12, name: "Benjamin White", initials: "BW", scores: { science: 84, technology: 86, engineering: 80, math: 88 } },
+                { id: 13, name: "Charlotte Harris", initials: "CH", scores: { science: 91, technology: 89, engineering: 85, math: 93 } },
+                { id: 14, name: "Elijah Martin", initials: "EM", scores: { science: 82, technology: 85, engineering: 78, math: 86 } },
+                { id: 15, name: "Amelia Thompson", initials: "AT", scores: { science: 88, technology: 91, engineering: 84, math: 90 } },
+                { id: 16, name: "Lucas Garcia", initials: "LG", scores: { science: 83, technology: 84, engineering: 79, math: 87 } },
+                { id: 17, name: "Harper Martinez", initials: "HM", scores: { science: 89, technology: 92, engineering: 86, math: 91 } },
+                { id: 18, name: "Alexander Robinson", initials: "AR", scores: { science: 81, technology: 83, engineering: 77, math: 85 } },
+                { id: 19, name: "Evelyn Clark", initials: "EC", scores: { science: 86, technology: 88, engineering: 82, math: 89 } },
+                { id: 20, name: "Henry Rodriguez", initials: "HR", scores: { science: 85, technology: 87, engineering: 81, math: 88 } }
+            ],
+            // Additional grades would be defined here...
+        };
+
+        
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Navigation functionality
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = this.getAttribute('data-target');
+                    
+                    // Update active navigation
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show the target section
+                    document.querySelectorAll('.content-section').forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    document.getElementById(target).classList.add('active');
+                });
+            });
+            
+            // Load students for default grade (6)
+            loadStudents(6);
+            
+            // Grade selection functionality
+            const gradeButtons = document.querySelectorAll('.grade-btn');
+            gradeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Update active grade button
+                    gradeButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const grade = this.getAttribute('data-grade');
+                    loadStudents(grade);
+                });
+            });
+            
+            // Back to students button
+            document.getElementById('back-to-students').addEventListener('click', function() {
+                document.getElementById('student-progress').style.display = 'none';
+                document.querySelector('.students-grid').style.display = 'grid';
+            });
+            
+            // Report options functionality
+            const reportOptions = document.querySelectorAll('.report-option');
+            reportOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Update active report option
+                    reportOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const reportType = this.getAttribute('data-report');
+                    
+                    if (reportType === 'performance') {
+                        document.getElementById('performance-report').style.display = 'block';
+                        document.getElementById('insights-report').style.display = 'none';
+                        // Generate performance chart
+                        generatePerformanceChart(6);
+                    } else {
+                        document.getElementById('performance-report').style.display = 'none';
+                        document.getElementById('insights-report').style.display = 'block';
+                    }
+                });
+            });
+            
+            // Generate initial performance chart
+            generatePerformanceChart(6);
+        });
+        
+        // Load students for a specific grade
+        function loadStudents(grade) {
+            const studentsGrid = document.querySelector('.students-grid');
+            studentsGrid.innerHTML = '';
+            
+            if (students[grade]) {
+                students[grade].forEach(student => {
+                    const averageScore = Math.round((student.scores.science + student.scores.technology + 
+                                                  student.scores.engineering + student.scores.math) / 4);
+                    
+                    const card = document.createElement('div');
+                    card.className = 'student-card';
+                    card.innerHTML = `
+                        <div class="student-avatar">${student.initials}</div>
+                        <div class="student-name">${student.name}</div>
+                        <div class="student-id">Grade ${grade}, ID: ${String(student.id).padStart(4, '0')}</div>
+                        <div class="student-score">${averageScore}%</div>
+                    `;
+                    
+                    // Add click event to show student progress
+                    card.addEventListener('click', () => {
+                        showStudentProgress(student, grade);
+                    });
+                    
+                    studentsGrid.appendChild(card);
+                });
+            }
+        }
+        
+        // Show student progress
+        function showStudentProgress(student, grade) {
+            document.querySelector('.students-grid').style.display = 'none';
+            document.getElementById('student-progress').style.display = 'block';
+            
+            // Update student name
+            document.getElementById('student-name').textContent = student.name;
+            
+            // Update progress bars
+            document.querySelector('.science .subject-score').textContent = student.scores.science + '%';
+            document.querySelector('.science .progress-fill').style.width = student.scores.science + '%';
+            
+            document.querySelector('.technology .subject-score').textContent = student.scores.technology + '%';
+            document.querySelector('.technology .progress-fill').style.width = student.scores.technology + '%';
+            
+            document.querySelector('.engineering .subject-score').textContent = student.scores.engineering + '%';
+            document.querySelector('.engineering .progress-fill').style.width = student.scores.engineering + '%';
+            
+            document.querySelector('.math .subject-score').textContent = student.scores.math + '%';
+            document.querySelector('.math .progress-fill').style.width = student.scores.math + '%';
+            
+            // Generate progress chart
+            generateProgressChart(student);
+        }
+        
+        // Generate progress chart for a student
+        function generateProgressChart(student) {
+            const ctx = document.getElementById('progress-chart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (window.progressChart) {
+                window.progressChart.destroy();
+            }
+            
+            // Create new chart
+            window.progressChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                    datasets: [
+                        {
+                            label: 'Science',
+                            data: [65, 70, 75, 78, 80, student.scores.science],
+                            borderColor: '#0dca06',
+                            backgroundColor: 'rgba(13, 202, 6, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Technology',
+                            data: [70, 75, 80, 84, 88, student.scores.technology],
+                            borderColor: '#25777d',
+                            backgroundColor: 'rgba(37, 119, 125, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Engineering',
+                            data: [60, 65, 68, 72, 75, student.scores.engineering],
+                            borderColor: '#8c06ca',
+                            backgroundColor: 'rgba(140, 6, 202, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Math',
+                            data: [75, 80, 84, 87, 89, student.scores.math],
+                            borderColor: '#0de995',
+                            backgroundColor: 'rgba(13, 233, 149, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 50,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#fff'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#fff'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#fff'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Generate performance chart for a grade
+        function generatePerformanceChart(grade) {
+            const ctx = document.getElementById('performance-chart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (window.performanceChart) {
+                window.performanceChart.destroy();
+            }
+            
+            // Prepare data for chart
+            const studentNames = students[grade].map(student => student.name);
+            const averageScores = students[grade].map(student => 
+                Math.round((student.scores.science + student.scores.technology + 
+                           student.scores.engineering + student.scores.math) / 4)
+            );
+            
+            // Create new chart
+            window.performanceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: studentNames,
+                    datasets: [{
+                        label: 'Average Score %',
+                        data: averageScores,
+                        backgroundColor: 'rgba(211, 216, 77, 0.7)',
+                        borderColor: 'rgba(211, 216, 77, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#fff'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#fff'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#fff'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

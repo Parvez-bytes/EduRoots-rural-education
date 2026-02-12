@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Games</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      background-image: url("https://images.unsplash.com/photo-1635372722656-389f87a941b7?q=80&w=1631&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+      background-size: cover;
+    }
+    header {
+      color: rgb(0, 0, 0);
+      padding: 20px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s;
+    position: sticky;
+    top: 0;
+    }
+   .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;    
+  align-items: center;
+  gap: 20px;                   /* spacing between cards */
+  padding: 30px;
+}
+
+.game-card {
+  background: rgb(208, 176, 230);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  width: 500px;
+  transition: all 10s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+    .game-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+      background: linear-gradient(to right,rgb(76, 44, 206),pink);
+    }
+    .game-card h3 {
+      margin: 15px 0 10px;
+    }
+    .game-card p {
+      font-size: 14px;
+      color: #555;
+    }
+    .game-card a {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 18px;
+      background: #4CAF50;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.5s;
+    }
+    .game-card a:hover {
+      background: #2d0670;
+      transform: scale(1.2);
+      border-radius: 50px;
+    }
+    .math-img{
+      position: absolute;
+      left: 2%;
+      top:30%;
+      height:40%;
+      object-fit: cover;
+    }
+    .ver-line{
+      height: 100%;
+      width: 100%;
+      background-color: #db1b1b;
+      padding: 1rem;
+      
+    }
+    .puzzlegame{
+      transition: all 10s cubic-bezier(0.075, 0.82, 0.165, 1);
+    
+
+    }
+   .puzzlegame .game-card:hover {
+  background-image: url("https://mir-s3-cdn-cf.behance.net/projects/404/cb0f41233081339.Y3JvcCwxMTIzLDg3OCwxODksMTY.png");
+  background-size: cover;
+  background-position: center;
+}
+   .cordinates-game .game-card:hover {
+  background-image: url("https://www.schoolgames.io/wp-content/uploads/2023/01/billy-bug.jpg");
+  background-size: cover;
+  background-position: center;
+}
+   .quiz-game .game-card:hover {
+  background-image: url("https://play-lh.googleusercontent.com/SliOd0GmWLXeRCi5lpvsDDPjTLuDAMy7UyPOoaYwCuj8saTRDsChqvJqwhJPzHH-8lM");
+  background-size: cover;
+  background-position: center;
+}
+   .memory-game .game-card:hover {
+  background-image: url("https://images.footballfanatics.com/florida-gators/florida-gators-licensed-memory-match-game_pi4201000_altimages_ff_4201373-802f607f1495affdd35aalt4_full.jpg?_hv=2&w=900");
+  background-size: cover;
+  background-position: center;
+}
+  </style>
+</head>
+<body>
+ <header data-key="math-header">
+  🎮 Math & Logic Games
+</header>
+
+<div class="container">
+  <img src="./images/maths.png" alt="" class="math-img">
+
+  <!-- 2048 Game -->
+  <div class="puzzlegame">
+    <div class="game-card">
+      <h3 data-key="game-2048-title">2048 Puzzle</h3>
+      <p data-key="game-2048-desc">Join the numbers and reach 2048! Improves logic and math skills.</p>
+      <a href="2game.html" data-key="game-2048-btn">Play Now</a>
+    </div>
+  </div>
+
+  <!-- Coordinate Quest -->
+  <div class="cordinates-game">
+    <div class="game-card">
+      <h3 data-key="game-coord-title">Coordinate Quest</h3>
+      <p data-key="game-coord-desc">Master the x-y plane by solving fun coordinate geometry challenges.</p>
+      <a href="3game.html" data-key="game-coord-btn">Play Now</a>
+    </div>
+  </div>
+
+  <!-- Math Quiz -->
+  <div class="quiz-game">
+    <div class="game-card">
+      <h3 data-key="game-quiz-title">Math Quiz</h3>
+      <p data-key="game-quiz-desc">Test your speed and accuracy with math questions.</p>
+      <a href="#" data-key="game-quiz-btn">Coming Soon</a>
+    </div>
+  </div>
+
+  <!-- Memory Match -->
+  <div class="memory-game">
+    <div class="game-card">
+      <h3 data-key="game-memory-title">Memory Match</h3>
+      <p data-key="game-memory-desc">Flip cards to match numbers and sharpen your memory.</p>
+      <a href="#" data-key="game-memory-btn">Coming Soon</a>
+    </div>
+  </div>
+</div>
+<script src="lang.js"></script>
+
+</body>
+</html>

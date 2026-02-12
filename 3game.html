@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coordinate Quest - Dynamic Questions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #fdbb2d;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: #fdbb2d;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+        
+        .game-board {
+            background: #2c3e50;
+            border-radius: 10px;
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #gameCanvas {
+            background: #1e272e;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-ui {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .stats {
+            background: rgba(52, 73, 94, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            color: #fdbb2d;
+            font-weight: bold;
+        }
+        
+        .controls {
+            background: rgba(52, 73, 94, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .mission {
+            background: rgba(52, 73, 94, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        h2 {
+            font-size: 1.4rem;
+            color: #fdbb2d;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .mission-text {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            min-height: 100px;
+        }
+        
+        .btn {
+            background: linear-gradient(to bottom, #fdbb2d, #f46b45);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px 0;
+            width: 100%;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            background: #7f8c8d;
+            cursor: not-allowed;
+        }
+        
+        .input-group {
+            margin: 10px 0;
+        }
+        
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #7f8c8d;
+            background: #2c3e50;
+            color: white;
+            margin-top: 5px;
+        }
+        
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            min-height: 40px;
+        }
+        
+        .success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+        
+        .error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .instructions h3 {
+            color: #fdbb2d;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .level-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+        
+        .level-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #7f8c8d;
+        }
+        
+        .level-dot.active {
+            background: #fdbb2d;
+            box-shadow: 0 0 5px #fdbb2d;
+        }
+        
+        .level-dot.completed {
+            background: #2ecc71;
+        }
+        
+        .question-info {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            text-align: center;
+            color: #fdbb2d;
+        }
+        
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Coordinate Quest</h1>
+            <p class="tagline">Master the coordinate plane by identifying points on the graph!</p>
+        </header>
+        
+        <div class="game-area">
+            <div class="game-board">
+                <canvas id="gameCanvas" width="600" height="500"></canvas>
+            </div>
+            
+            <div class="game-ui">
+                <div class="stats">
+                    <h2>Player Stats</h2>
+                    <div class="stat">Level: <span class="stat-value" id="level">1</span></div>
+                    <div class="stat">Score: <span class="stat-value" id="score">0</span></div>
+                    <div class="stat">Lives: <span class="stat-value" id="lives">3</span></div>
+                </div>
+                
+                <div class="mission">
+                    <h2>Current Challenge</h2>
+                    <div class="mission-text" id="missionText">
+                        Welcome to Coordinate Quest! Look at the graph and identify the coordinates of the highlighted point.
+                    </div>
+                    <div class="input-group">
+                        <label for="xInput">X Coordinate:</label>
+                        <input type="number" id="xInput" placeholder="Enter X" step="any">
+                    </div>
+                    <div class="input-group">
+                        <label for="yInput">Y Coordinate:</label>
+                        <input type="number" id="yInput" placeholder="Enter Y" step="any">
+                    </div>
+                    <button class="btn" id="submitBtn">Submit Answer</button>
+                    <button class="btn" id="hintBtn">Give Me a Hint</button>
+                    <div class="feedback" id="feedback"></div>
+                    <div class="question-info" id="questionInfo">
+                        Each level generates random coordinates!
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <h2>Game Controls</h2>
+                    <button class="btn" id="restartBtn">New Question</button>
+                    <button class="btn" id="nextLevelBtn" disabled>Next Level</button>
+                    <div class="level-progress" id="levelProgress">
+                        <!-- Level dots will be inserted here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>How the Game Works:</h3>
+            <ul>
+                <li>Each level generates <strong>random coordinates</strong> based on difficulty</li>
+                <li>Questions are <strong>never the same twice</strong> - great for repeated practice!</li>
+                <li>Levels 1-5: Positive integers only (Quadrant I)</li>
+                <li>Levels 6-10: Integers in all four quadrants</li>
+                <li>Levels 11-15: Decimal numbers in all quadrants</li>
+                <li>Use the "New Question" button to get a different point at the same difficulty level</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const missionText = document.getElementById('missionText');
+            const feedback = document.getElementById('feedback');
+            const levelDisplay = document.getElementById('level');
+            const scoreDisplay = document.getElementById('score');
+            const livesDisplay = document.getElementById('lives');
+            const xInput = document.getElementById('xInput');
+            const yInput = document.getElementById('yInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const hintBtn = document.getElementById('hintBtn');
+            const restartBtn = document.getElementById('restartBtn');
+            const nextLevelBtn = document.getElementById('nextLevelBtn');
+            const levelProgress = document.getElementById('levelProgress');
+            const questionInfo = document.getElementById('questionInfo');
+            
+            // Game state
+            let level = 1;
+            let score = 0;
+            let lives = 3;
+            let currentPoint = { x: 0, y: 0 };
+            let attempts = 0;
+            
+            // Level definitions with increasing difficulty
+            const levels = [
+                // Level 1-5: Easy points in Quadrant I
+                { range: 5, decimals: 0, quadrants: [1], description: "Positive integers only" },
+                { range: 6, decimals: 0, quadrants: [1], description: "Positive integers only" },
+                { range: 7, decimals: 0, quadrants: [1], description: "Positive integers only" },
+                { range: 8, decimals: 0, quadrants: [1], description: "Positive integers only" },
+                { range: 10, decimals: 0, quadrants: [1], description: "Positive integers only" },
+                
+                // Level 6-10: All quadrants, integers
+                { range: 8, decimals: 0, quadrants: [1, 2, 3, 4], description: "Integers in all quadrants" },
+                { range: 8, decimals: 0, quadrants: [1, 2, 3, 4], description: "Integers in all quadrants" },
+                { range: 10, decimals: 0, quadrants: [1, 2, 3, 4], description: "Integers in all quadrants" },
+                { range: 10, decimals: 0, quadrants: [1, 2, 3, 4], description: "Integers in all quadrants" },
+                { range: 10, decimals: 0, quadrants: [1, 2, 3, 4], description: "Integers in all quadrants" },
+                
+                // Level 11-15: All quadrants, decimals
+                { range: 8, decimals: 1, quadrants: [1, 2, 3, 4], description: "Decimals in all quadrants" },
+                { range: 8, decimals: 1, quadrants: [1, 2, 3, 4], description: "Decimals in all quadrants" },
+                { range: 10, decimals: 1, quadrants: [1, 2, 3, 4], description: "Decimals in all quadrants" },
+                { range: 10, decimals: 1, quadrants: [1, 2, 3, 4], description: "Decimals in all quadrants" },
+                { range: 10, decimals: 1, quadrants: [1, 2, 3, 4], description: "Decimals in all quadrants" },
+            ];
+            
+            // Initialize game
+            generateNewPoint();
+            drawGrid();
+            drawPoint();
+            updateMissionText();
+            createLevelDots();
+            updateQuestionInfo();
+            
+            // Event listeners
+            submitBtn.addEventListener('click', checkAnswer);
+            hintBtn.addEventListener('click', giveHint);
+            restartBtn.addEventListener('click', generateNewQuestion);
+            nextLevelBtn.addEventListener('click', nextLevel);
+            
+            function drawGrid() {
+                const width = canvas.width;
+                const height = canvas.height;
+                const originX = width / 2;
+                const originY = height / 2;
+                const scale = 30; // pixels per unit
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw grid lines
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                ctx.lineWidth = 1;
+                
+                // Vertical lines
+                for (let x = -10; x <= 10; x++) {
+                    ctx.beginPath();
+                    ctx.moveTo(originX + x * scale, 0);
+                    ctx.lineTo(originX + x * scale, height);
+                    ctx.stroke();
+                }
+                
+                // Horizontal lines
+                for (let y = -10; y <= 10; y++) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, originY + y * scale);
+                    ctx.lineTo(width, originY + y * scale);
+                    ctx.stroke();
+                }
+                
+                // Draw axes
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                
+                // X-axis
+                ctx.beginPath();
+                ctx.moveTo(0, originY);
+                ctx.lineTo(width, originY);
+                ctx.stroke();
+                
+                // Y-axis
+                ctx.beginPath();
+                ctx.moveTo(originX, 0);
+                ctx.lineTo(originX, height);
+                ctx.stroke();
+                
+                // Draw labels
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                
+                // X-axis labels
+                for (let x = -10; x <= 10; x++) {
+                    if (x === 0) continue;
+                    ctx.fillText(x, originX + x * scale, originY + 15);
+                }
+                
+                // Y-axis labels
+                for (let y = -10; y <= 10; y++) {
+                    if (y === 0) continue;
+                    ctx.fillText(y, originX - 15, originY - y * scale);
+                }
+                
+                // Origin label
+                ctx.fillText('O', originX - 10, originY + 15);
+                ctx.fillText('X', width - 10, originY - 10);
+                ctx.fillText('Y', originX + 10, 15);
+                
+                // Draw quadrant labels
+                ctx.font = 'bold 16px Arial';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.fillText('Quadrant II', originX - 100, originY - 100);
+                ctx.fillText('Quadrant I', originX + 100, originY - 100);
+                ctx.fillText('Quadrant III', originX - 100, originY + 100);
+                ctx.fillText('Quadrant IV', originX + 100, originY + 100);
+            }
+            
+            function drawPoint() {
+                const originX = canvas.width / 2;
+                const originY = canvas.height / 2;
+                const scale = 30;
+                
+                // Draw the point
+                ctx.fillStyle = '#fdbb2d';
+                ctx.beginPath();
+                ctx.arc(originX + currentPoint.x * scale, originY - currentPoint.y * scale, 8, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Draw connecting lines to axes
+                ctx.strokeStyle = 'rgba(253, 187, 45, 0.5)';
+                ctx.setLineDash([5, 3]);
+                ctx.lineWidth = 1;
+                
+                // Vertical line to x-axis
+                ctx.beginPath();
+                ctx.moveTo(originX + currentPoint.x * scale, originY);
+                ctx.lineTo(originX + currentPoint.x * scale, originY - currentPoint.y * scale);
+                ctx.stroke();
+                
+                // Horizontal line to y-axis
+                ctx.beginPath();
+                ctx.moveTo(originX, originY - currentPoint.y * scale);
+                ctx.lineTo(originX + currentPoint.x * scale, originY - currentPoint.y * scale);
+                ctx.stroke();
+                
+                ctx.setLineDash([]);
+            }
+            
+            function generateNewPoint() {
+                const levelDef = levels[level - 1];
+                const quadrant = levelDef.quadrants[Math.floor(Math.random() * levelDef.quadrants.length)];
+                
+                let x, y;
+                
+                // Generate coordinates based on quadrant
+                switch(quadrant) {
+                    case 1: // QI: (+, +)
+                        x = getRandomInRange(1, levelDef.range, levelDef.decimals);
+                        y = getRandomInRange(1, levelDef.range, levelDef.decimals);
+                        break;
+                    case 2: // QII: (-, +)
+                        x = getRandomInRange(-levelDef.range, -1, levelDef.decimals);
+                        y = getRandomInRange(1, levelDef.range, levelDef.decimals);
+                        break;
+                    case 3: // QIII: (-, -)
+                        x = getRandomInRange(-levelDef.range, -1, levelDef.decimals);
+                        y = getRandomInRange(-levelDef.range, -1, levelDef.decimals);
+                        break;
+                    case 4: // QIV: (+, -)
+                        x = getRandomInRange(1, levelDef.range, levelDef.decimals);
+                        y = getRandomInRange(-levelDef.range, -1, levelDef.decimals);
+                        break;
+                }
+                
+                currentPoint = { x, y };
+            }
+            
+            function getRandomInRange(min, max, decimals) {
+                if (decimals === 0) {
+                    return Math.floor(Math.random() * (max - min + 1)) + min;
+                } else {
+                    const value = Math.random() * (max - min) + min;
+                    return Math.round(value * 10) / 10;
+                }
+            }
+            
+            function updateMissionText() {
+                missionText.innerHTML = `<strong>Level ${level}:</strong> Identify the coordinates of the point marked on the graph.`;
+            }
+            
+            function updateQuestionInfo() {
+                const levelDef = levels[level - 1];
+                questionInfo.textContent = `Level ${level}: ${levelDef.description}. Each play generates new random points!`;
+            }
+            
+            function checkAnswer() {
+                const x = parseFloat(xInput.value);
+                const y = parseFloat(yInput.value);
+                
+                if (isNaN(x) || isNaN(y)) {
+                    showFeedback("Please enter valid numbers for both coordinates!", "error");
+                    return;
+                }
+                
+                attempts++;
+                
+                // Check if answer is correct (with tolerance for floating point numbers)
+                const tolerance = 0.1;
+                const xCorrect = Math.abs(x - currentPoint.x) < tolerance;
+                const yCorrect = Math.abs(y - currentPoint.y) < tolerance;
+                
+                if (xCorrect && yCorrect) {
+                    // Correct answer
+                    const pointsEarned = Math.max(50, 200 - (attempts * 20));
+                    score += pointsEarned;
+                    scoreDisplay.textContent = score;
+                    
+                    showFeedback(`Correct! The point is (${currentPoint.x}, ${currentPoint.y}). +${pointsEarned} points!`, "success");
+                    
+                    // Enable next level button if not the last level
+                    if (level < levels.length) {
+                        nextLevelBtn.disabled = false;
+                    } else {
+                        showFeedback("Congratulations! You've completed all levels! You're a coordinate master!", "success");
+                    }
+                } else {
+                    // Incorrect answer
+                    let hint = "";
+                    if (!xCorrect && !yCorrect) {
+                        hint = "Both coordinates are incorrect.";
+                    } else if (!xCorrect) {
+                        hint = "Your Y coordinate is correct, but X is wrong.";
+                    } else {
+                        hint = "Your X coordinate is correct, but Y is wrong.";
+                    }
+                    
+                    showFeedback(`Incorrect. ${hint} Try again!`, "error");
+                    
+                    // Lose a life after 3 attempts
+                    if (attempts >= 3) {
+                        lives--;
+                        livesDisplay.textContent = lives;
+                        attempts = 0;
+                        
+                        if (lives <= 0) {
+                            showFeedback("Game Over! You've run out of lives.", "error");
+                            submitBtn.disabled = true;
+                        } else {
+                            showFeedback("You lost a life. Be more careful!", "error");
+                        }
+                    }
+                }
+            }
+            
+            function giveHint() {
+                let hint = "";
+                
+                if (attempts === 0) {
+                    hint = `The point is in Quadrant ${getQuadrant(currentPoint)}.`;
+                } else if (attempts === 1) {
+                    hint = `The X coordinate is ${currentPoint.x > 0 ? "positive" : "negative"}.`;
+                } else {
+                    hint = `The point is (${currentPoint.x}, ${currentPoint.y}).`;
+                    // Big penalty for revealing the answer
+                    score = Math.max(0, score - 50);
+                    scoreDisplay.textContent = score;
+                }
+                
+                showFeedback(`Hint: ${hint}`, "success");
+                
+                // Deduct points for using a hint
+                score = Math.max(0, score - 10);
+                scoreDisplay.textContent = score;
+                attempts++; // Count hint as an attempt
+            }
+            
+            function getQuadrant(point) {
+                if (point.x > 0 && point.y > 0) return "I";
+                if (point.x < 0 && point.y > 0) return "II";
+                if (point.x < 0 && point.y < 0) return "III";
+                if (point.x > 0 && point.y < 0) return "IV";
+                return "on an axis";
+            }
+            
+            function showFeedback(message, type) {
+                feedback.textContent = message;
+                feedback.className = 'feedback ' + type;
+            }
+            
+            function generateNewQuestion() {
+                attempts = 0;
+                generateNewPoint();
+                drawGrid();
+                drawPoint();
+                xInput.value = "";
+                yInput.value = "";
+                showFeedback("New question generated. Good luck!", "success");
+                updateQuestionInfo();
+            }
+            
+            function nextLevel() {
+                level++;
+                
+                if (level > levels.length) {
+                    level = levels.length;
+                    showFeedback("You've already completed all levels! You're a coordinate master!", "success");
+                    return;
+                }
+                
+                levelDisplay.textContent = level;
+                generateNewQuestion();
+                updateMissionText();
+                updateLevelDots();
+                updateQuestionInfo();
+                
+                // Disable next level button until they answer correctly
+                nextLevelBtn.disabled = true;
+            }
+            
+            function createLevelDots() {
+                levelProgress.innerHTML = '';
+                for (let i = 1; i <= levels.length; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'level-dot';
+                    if (i === level) dot.classList.add('active');
+                    if (i < level) dot.classList.add('completed');
+                    levelProgress.appendChild(dot);
+                }
+            }
+            
+            function updateLevelDots() {
+                const dots = levelProgress.querySelectorAll('.level-dot');
+                dots.forEach((dot, index) => {
+                    dot.classList.remove('active', 'completed');
+                    if (index + 1 === level) dot.classList.add('active');
+                    if (index + 1 < level) dot.classList.add('completed');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

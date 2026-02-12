@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logic Gates Learning Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e6e6e6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(20, 30, 48, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            padding: 0;
+        }
+        
+        header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            text-align: center;
+            border-bottom: 2px solid #4361ee;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #4cc9f0;
+            text-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a3a3c2;
+            margin-bottom: 10px;
+        }
+        
+        .game-area {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+            gap: 20px;
+        }
+        
+        .left-panel {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(25, 35, 53, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        .right-panel {
+            flex: 1.5;
+            min-width: 400px;
+            background: rgba(25, 35, 53, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        .panel-title {
+            font-size: 1.5rem;
+            color: #f72585;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4361ee;
+        }
+        
+        .circuit-area {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .input-bulbs {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .bulb {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #3a3a5c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .bulb::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: #2c2c4c;
+            border-radius: 0 0 5px 5px;
+        }
+        
+        .bulb.on {
+            background: #ffdd00;
+            box-shadow: 0 0 30px #ffdd00, 0 0 50px rgba(255, 221, 0, 0.5);
+        }
+        
+        .bulb-label {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #a3a3c2;
+        }
+        
+        .gate-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .gate-box {
+            width: 120px;
+            height: 80px;
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .gate-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .gate-btn {
+            background: #4361ee;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            flex: 1;
+            min-width: 80px;
+        }
+        
+        .gate-btn:hover {
+            background: #3a0ca3;
+            transform: translateY(-3px);
+        }
+        
+        .gate-btn.selected {
+            background: #f72585;
+            box-shadow: 0 0 15px rgba(247, 37, 133, 0.5);
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .action-btn {
+            background: #4cc9f0;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .action-btn:hover {
+            background: #3aa9cc;
+            transform: translateY(-3px);
+        }
+        
+        .action-btn.secondary {
+            background: #9756e0;
+        }
+        
+        .action-btn.secondary:hover {
+            background: #7a3dc2;
+        }
+        
+        .score-display {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #4cc9f0;
+            margin: 15px 0;
+        }
+        
+        .truth-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .truth-table th, .truth-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #4361ee;
+        }
+        
+        .truth-table th {
+            background: rgba(67, 97, 238, 0.3);
+            color: #4cc9f0;
+        }
+        
+        .truth-table tr:nth-child(even) {
+            background: rgba(67, 97, 238, 0.1);
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 10px;
+        }
+        
+        .instructions h3 {
+            color: #f72585;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .challenge {
+            padding: 15px;
+            background: rgba(76, 201, 240, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #4cc9f0;
+            margin: 20px 0;
+        }
+        
+        .challenge-title {
+            color: #4cc9f0;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .game-area {
+                flex-direction: column;
+            }
+            
+            .left-panel, .right-panel {
+                min-width: 100%;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Animation for success */
+        @keyframes success {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .success {
+            animation: success 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Logic Gates Learning Game</h1>
+            <p class="subtitle">Learn how logic gates work by building circuits with light bulbs</p>
+        </header>
+        
+        <div class="game-area">
+            <div class="left-panel">
+                <h2 class="panel-title">Circuit Builder</h2>
+                
+                <div class="circuit-area">
+                    <div class="input-bulbs">
+                        <div>
+                            <div class="bulb" id="inputA">
+                                <i class="fas fa-lightbulb" style="font-size: 2rem; color: #3a3a5c;"></i>
+                            </div>
+                            <div class="bulb-label">Input A</div>
+                        </div>
+                        <div>
+                            <div class="bulb" id="inputB">
+                                <i class="fas fa-lightbulb" style="font-size: 2rem; color: #3a3a5c;"></i>
+                            </div>
+                            <div class="bulb-label">Input B</div>
+                        </div>
+                    </div>
+                    
+                    <div class="gate-display">
+                        <div class="gate-box">AND</div>
+                        <div class="gate-label">Logic Gate</div>
+                    </div>
+                    
+                    <div class="output-bulb">
+                        <div class="bulb" id="output">
+                            <i class="fas fa-lightbulb" style="font-size: 2rem; color: #3a3a5c;"></i>
+                        </div>
+                        <div class="bulb-label">Output</div>
+                    </div>
+                </div>
+                
+                <div class="gate-controls">
+                    <button class="gate-btn selected" data-gate="AND">AND</button>
+                    <button class="gate-btn" data-gate="OR">OR</button>
+                    <button class="gate-btn" data-gate="NOT">NOT</button>
+                    <button class="gate-btn" data-gate="XOR">XOR</button>
+                    <button class="gate-btn" data-gate="NAND">NAND</button>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn" id="check-btn">Check Circuit</button>
+                    <button class="action-btn secondary" id="hint-btn">Get Hint</button>
+                    <button class="action-btn" id="reset-btn">Reset</button>
+                </div>
+                
+                <div class="score-display">
+                    <i class="fas fa-star"></i>
+                    Score: <span id="score-value">0</span>
+                    <i class="fas fa-bolt" style="margin-left: 15px;"></i>
+                    Level: <span id="level-value">1</span>
+                </div>
+                
+                <div class="challenge">
+                    <h3 class="challenge-title">Current Challenge</h3>
+                    <p>Make the output bulb light up using the AND gate. Both inputs must be ON.</p>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <h2 class="panel-title">Logic Gate Guide</h2>
+                
+                <table class="truth-table">
+                    <thead>
+                        <tr>
+                            <th>Input A</th>
+                            <th>Input B</th>
+                            <th>AND</th>
+                            <th>OR</th>
+                            <th>NOT</th>
+                            <th>XOR</th>
+                            <th>NAND</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>OFF</td>
+                            <td>OFF</td>
+                            <td>OFF</td>
+                            <td>OFF</td>
+                            <td>ON*</td>
+                            <td>OFF</td>
+                            <td>ON</td>
+                        </tr>
+                        <tr>
+                            <td>OFF</td>
+                            <td>ON</td>
+                            <td>OFF</td>
+                            <td>ON</td>
+                            <td>ON*</td>
+                            <td>ON</td>
+                            <td>ON</td>
+                        </tr>
+                        <tr>
+                            <td>ON</td>
+                            <td>OFF</td>
+                            <td>OFF</td>
+                            <td>ON</td>
+                            <td>OFF*</td>
+                            <td>ON</td>
+                            <td>ON</td>
+                        </tr>
+                        <tr>
+                            <td>ON</td>
+                            <td>ON</td>
+                            <td>ON</td>
+                            <td>ON</td>
+                            <td>OFF*</td>
+                            <td>OFF</td>
+                            <td>OFF</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="instructions">
+                    <h3>How to Play</h3>
+                    <ol>
+                        <li>Click on input bulbs A and B to toggle them ON/OFF</li>
+                        <li>Select a logic gate from the options</li>
+                        <li>Observe how the output changes based on inputs and selected gate</li>
+                        <li>Click "Check Circuit" to verify if you've completed the challenge</li>
+                        <li>Earn points and advance to higher levels with more complex challenges</li>
+                    </ol>
+                    <p style="margin-top: 10px; font-style: italic;">* Note: NOT gate only uses Input A</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputA = document.getElementById('inputA');
+            const inputB = document.getElementById('inputB');
+            const output = document.getElementById('output');
+            const gateButtons = document.querySelectorAll('.gate-btn');
+            const checkBtn = document.getElementById('check-btn');
+            const hintBtn = document.getElementById('hint-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const scoreValue = document.getElementById('score-value');
+            const levelValue = document.getElementById('level-value');
+            const gateBox = document.querySelector('.gate-box');
+            
+            let inputAState = false;
+            let inputBState = false;
+            let selectedGate = 'AND';
+            let score = 0;
+            let level = 1;
+            
+            // Initialize the game
+            updateBulbs();
+            
+            // Add event listeners to input bulbs
+            inputA.addEventListener('click', function() {
+                inputAState = !inputAState;
+                updateBulbs();
+                calculateOutput();
+            });
+            
+            inputB.addEventListener('click', function() {
+                inputBState = !inputBState;
+                updateBulbs();
+                calculateOutput();
+            });
+            
+            // Add event listeners to gate buttons
+            gateButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    selectedGate = this.getAttribute('data-gate');
+                    gateBox.textContent = selectedGate;
+                    
+                    // Update button styles
+                    gateButtons.forEach(btn => btn.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    calculateOutput();
+                    updateChallenge();
+                });
+            });
+            
+            // Check button event listener
+            checkBtn.addEventListener('click', function() {
+                const outputState = output.classList.contains('on');
+                
+                if (selectedGate === 'AND' && inputAState && inputBState && outputState) {
+                    score += 20;
+                    scoreValue.textContent = score;
+                    output.classList.add('success');
+                    setTimeout(() => output.classList.remove('success'), 500);
+                    alert('Correct! AND gate outputs ON only when both inputs are ON. +20 points');
+                } else if (selectedGate === 'OR' && (inputAState || inputBState) && outputState) {
+                    score += 20;
+                    scoreValue.textContent = score;
+                    output.classList.add('success');
+                    setTimeout(() => output.classList.remove('success'), 500);
+                    alert('Correct! OR gate outputs ON when at least one input is ON. +20 points');
+                } else if (selectedGate === 'NOT' && inputAState !== outputState) {
+                    score += 20;
+                    scoreValue.textContent = score;
+                    output.classList.add('success');
+                    setTimeout(() => output.classList.remove('success'), 500);
+                    alert('Correct! NOT gate outputs the opposite of the input. +20 points');
+                } else {
+                    alert('Not quite right. Try again!');
+                }
+            });
+            
+            // Hint button event listener
+            hintBtn.addEventListener('click', function() {
+                let hint = '';
+                
+                switch(selectedGate) {
+                    case 'AND':
+                        hint = 'AND gate: The output is ON only when both inputs are ON.';
+                        break;
+                    case 'OR':
+                        hint = 'OR gate: The output is ON when at least one input is ON.';
+                        break;
+                    case 'NOT':
+                        hint = 'NOT gate: The output is the opposite of Input A (ignores Input B).';
+                        break;
+                    case 'XOR':
+                        hint = 'XOR gate: The output is ON when the inputs are different.';
+                        break;
+                    case 'NAND':
+                        hint = 'NAND gate: The output is ON unless both inputs are ON.';
+                        break;
+                }
+                
+                alert(hint);
+            });
+            
+            // Reset button event listener
+            resetBtn.addEventListener('click', function() {
+                inputAState = false;
+                inputBState = false;
+                updateBulbs();
+                calculateOutput();
+            });
+            
+            // Function to update bulb states
+            function updateBulbs() {
+                if (inputAState) {
+                    inputA.classList.add('on');
+                    inputA.querySelector('i').style.color = '#ffdd00';
+                } else {
+                    inputA.classList.remove('on');
+                    inputA.querySelector('i').style.color = '#3a3a5c';
+                }
+                
+                if (inputBState) {
+                    inputB.classList.add('on');
+                    inputB.querySelector('i').style.color = '#ffdd00';
+                } else {
+                    inputB.classList.remove('on');
+                    inputB.querySelector('i').style.color = '#3a3a5c';
+                }
+            }
+            
+            // Function to calculate output based on selected gate
+            function calculateOutput() {
+                let outputState = false;
+                
+                switch(selectedGate) {
+                    case 'AND':
+                        outputState = inputAState && inputBState;
+                        break;
+                    case 'OR':
+                        outputState = inputAState || inputBState;
+                        break;
+                    case 'NOT':
+                        outputState = !inputAState;
+                        break;
+                    case 'XOR':
+                        outputState = inputAState !== inputBState;
+                        break;
+                    case 'NAND':
+                        outputState = !(inputAState && inputBState);
+                        break;
+                }
+                
+                if (outputState) {
+                    output.classList.add('on');
+                    output.querySelector('i').style.color = '#ffdd00';
+                } else {
+                    output.classList.remove('on');
+                    output.querySelector('i').style.color = '#3a3a5c';
+                }
+            }
+            
+            // Function to update challenge text
+            function updateChallenge() {
+                const challengeElement = document.querySelector('.challenge p');
+                
+                switch(selectedGate) {
+                    case 'AND':
+                        challengeElement.textContent = 'Make the output bulb light up using the AND gate. Both inputs must be ON.';
+                        break;
+                    case 'OR':
+                        challengeElement.textContent = 'Make the output bulb light up using the OR gate. At least one input must be ON.';
+                        break;
+                    case 'NOT':
+                        challengeElement.textContent = 'Make the output bulb light up using the NOT gate. The output is the opposite of Input A.';
+                        break;
+                    case 'XOR':
+                        challengeElement.textContent = 'Make the output bulb light up using the XOR gate. The inputs must be different.';
+                        break;
+                    case 'NAND':
+                        challengeElement.textContent = 'Make the output bulb light up using the NAND gate. The output is ON unless both inputs are ON.';
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

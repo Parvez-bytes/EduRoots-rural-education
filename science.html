@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Science Games</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      background-image: url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+      background-size: cover;
+    }
+    header {
+      color: rgb(0, 0, 0);
+      padding: 20px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s;
+    position: sticky;
+    top: 0;
+    }
+   .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;    
+  align-items: center;
+  gap: 20px;                   /* spacing between cards */
+  padding: 30px;
+}
+
+.game-card {
+  background: rgb(208, 176, 230);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  width: 500px;
+  transition: all 10s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+    .game-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+      background: linear-gradient(to right,rgb(76, 44, 206),pink);
+    }
+    .game-card h3 {
+      margin: 15px 0 10px;
+    }
+    .game-card p {
+      font-size: 14px;
+      color: #555;
+    }
+    .game-card a {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 18px;
+      background: #4CAF50;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.5s;
+    }
+    .game-card a:hover {
+      background: #2d0670;
+      transform: scale(1.2);
+      border-radius: 50px;
+    }
+    .math-img{
+      position: absolute;
+      left: 2%;
+      top:30%;
+      height:40%;
+      object-fit: cover;
+    }
+    .ver-line{
+      height: 100%;
+      width: 100%;
+      background-color: #db1b1b;
+      padding: 1rem;
+      
+    }
+    .puzzlegame{
+      transition: all 10s cubic-bezier(0.075, 0.82, 0.165, 1);
+    
+
+    }
+   .gategame .game-card:hover {
+  background-image: url("https://www.plcgurus.net/wp-content/uploads/2024/01/logic-gates.jpg");
+  background-size: cover;
+  background-position: center;
+}
+   .drop-game .game-card:hover {
+  background-image: url("https://img.freepik.com/premium-vector/isaac-newton-apple-tree-cartoon-illustration_1220412-646.jpg");
+  background-size: cover;
+  background-position: center;
+}
+   .biology-game .game-card:hover {
+  background-image: url("https://t3.ftcdn.net/jpg/15/89/75/58/360_F_1589755847_RNHVwx5ujkjyDfhyPk1BVpasQTmjpyN0.jpg");
+  background-size: cover;
+  background-position: center;
+}
+   .space-game .game-card:hover {
+  background-image: url("https://media.istockphoto.com/id/1587601513/photo/international-day-of-human-space-flight-cosmonautics-day-concept.jpg?s=612x612&w=0&k=20&c=86fTkpYtoD73xp5OT3Jm9gR3Wu0c5ej0B9_hZ4dZBqo=");
+  background-size: cover;
+  background-position: center;
+}
+  </style>
+</head>
+<body>
+<header data-key="science-header">
+ 🔬 Science & Discovery Games
+</header>
+
+<div class="container">
+  <img src="./images/scientist.png" alt="" class="math-img">
+
+  <!-- Logic Gate Challenge -->
+  <div class="gategame">
+    <div class="game-card">
+      <h3 data-key="game-gate-title">Logic Gate Challenge</h3>
+      <p data-key="game-gate-desc">Test your skills with AND, OR, NOT, and Universal Gates. Build circuits and solve puzzles!</p>
+      <a href="s1game.html" data-key="game-gate-btn">Play Now</a>
+    </div>
+  </div>
+
+  <!-- Physics Drop -->
+  <div class="drop-game">
+    <div class="game-card">
+      <h3 data-key="game-physics-title">Physics Drop</h3>
+      <p data-key="game-physics-desc">Experiment with gravity, motion, and energy through fun challenges.</p>
+      <a href="#" data-key="game-physics-btn">Coming Soon</a>
+    </div>
+  </div>
+
+  <!-- Biology Match -->
+  <div class="biology-game">
+    <div class="game-card">
+      <h3 data-key="game-bio-title">Biology Match</h3>
+      <p data-key="game-bio-desc">Match organs, cells, and systems to learn human biology interactively.</p>
+      <a href="#" data-key="game-bio-btn">Coming Soon</a>
+    </div>
+  </div>
+
+  <!-- Space Explorer -->
+  <div class="space-game">
+    <div class="game-card">
+      <h3 data-key="game-space-title">Space Explorer</h3>
+      <p data-key="game-space-desc">Travel across the solar system and test your knowledge of planets.</p>
+      <a href="#" data-key="game-space-btn">Coming Soon</a>
+    </div>
+  </div>
+</div>
+<script src="lang.js"></script>
+
+</body>
+</html>

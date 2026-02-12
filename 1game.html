@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe - Gamified</title>
+<style>
+  body { font-family: Arial, sans-serif; text-align: center; background: #f0f8ff; margin:0; padding:0;}
+  h1 { color: #333; margin-top:10px;}
+  #scoreboard { display:flex; justify-content:center; gap:20px; font-size:18px; margin-top:10px;}
+  #board { display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 5px; justify-content: center; margin: 20px auto; }
+  .cell { width: 100px; height: 100px; font-size: 60px; display: flex; align-items: center; justify-content: center; background: #fff; border: 2px solid #333; cursor: pointer; }
+  #status { margin-top: 20px; font-size: 20px; height:30px; }
+  #reset { padding: 10px 20px; font-size: 16px; cursor: pointer; margin-top: 15px;}
+  .confetti { position:absolute; width:10px; height:10px; background:gold; pointer-events:none; animation: fall 1s linear forwards;}
+  @keyframes fall { to { transform: translateY(600px) rotate(360deg); opacity:0; } }
+</style>
+</head>
+<body>
+
+<h1>Tic Tac Toe</h1>
+<div id="scoreboard">
+  <div id="level">Level: 1</div>
+  <div id="wins">Wins: 0</div>
+  <div id="losses">Losses: 0</div>
+  <div id="draws">Draws: 0</div>
+</div>
+<div id="board"></div>
+<div id="status"></div>
+<button id="reset">Reset Game</button>
+
+<script>
+const board = document.getElementById('board');
+const status = document.getElementById('status');
+const resetBtn = document.getElementById('reset');
+const levelDisplay = document.getElementById('level');
+const winsDisplay = document.getElementById('wins');
+const lossesDisplay = document.getElementById('losses');
+const drawsDisplay = document.getElementById('draws');
+
+let cells = [];
+let player = 'X';
+let ai = 'O';
+let level = 1;
+let score = JSON.parse(localStorage.getItem('ticTacToeScore')) || {wins:0, losses:0, draws:0};
+
+function updateScoreboard(){
+  levelDisplay.textContent = `Level: ${level}`;
+  winsDisplay.textContent = `Wins: ${score.wins}`;
+  lossesDisplay.textContent = `Losses: ${score.losses}`;
+  drawsDisplay.textContent = `Draws: ${score.draws}`;
+  localStorage.setItem('ticTacToeScore', JSON.stringify(score));
+}
+
+function createBoard(){
+  board.innerHTML = '';
+  cells = [];
+  for(let i=0;i<9;i++){
+    const cell = document.createElement('div');
+    cell.classList.add('cell');
+    cell.addEventListener('click', ()=>playerMove(i));
+    board.appendChild(cell);
+    cells.push(cell);
+  }
+  status.textContent = "Your turn!";
+}
+
+function playerMove(index){
+  if(cells[index].textContent !== '') return;
+  cells[index].textContent = player;
+  if(checkWin(player)) return endGame('win');
+  if(isDraw()) return endGame('draw');
+  status.textContent = "Computer's turn...";
+  setTimeout(aiMove, 300);
+}
+
+function aiMove(){
+  let move;
+  if(level===1){
+    const empty = cells.map((c,i)=> c.textContent===''?i:null).filter(i=>i!==null);
+    move = empty[Math.floor(Math.random()*empty.length)];
+  } else {
+    move = bestMove();
+  }
+  cells[move].textContent = ai;
+  if(checkWin(ai)) return endGame('lose');
+  if(isDraw()) return endGame('draw');
+  status.textContent = "Your turn!";
+}
+
+function checkWin(p){
+  const combos = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+  return combos.some(combo => combo.every(i=>cells[i].textContent===p));
+}
+
+function isDraw(){
+  return cells.every(c=>c.textContent!=='');
+}
+
+function endGame(result){
+  if(result==='win'){
+    score.wins++;
+    level++;
+    status.textContent = "You win! 🎉";
+    showConfetti();
+  } else if(result==='lose'){
+    score.losses++;
+    status.textContent = "Computer wins!";
+  } else {
+    score.draws++;
+    status.textContent = "Draw!";
+  }
+  updateScoreboard();
+  setTimeout(()=>{ createBoard(); }, 1500);
+}
+
+// Simple Minimax for AI
+function bestMove(){
+  let bestScore=-Infinity;
+  let move;
+  for(let i=0;i<9;i++){
+    if(cells[i].textContent===''){
+      cells[i].textContent=ai;
+      let scoreVal = minimax(cells, 0, false);
+      cells[i].textContent='';
+      if(scoreVal>bestScore){
+        bestScore=scoreVal;
+        move=i;
+      }
+    }
+  }
+  return move;
+}
+
+function minimax(boardState, depth, isMax){
+  if(checkWin(ai)) return 10-depth;
+  if(checkWin(player)) return depth-10;
+  if(boardState.every(c=>c.textContent!=='')) return 0;
+
+  if(isMax){
+    let maxEval=-Infinity;
+    for(let i=0;i<9;i++){
+      if(cells[i].textContent===''){
+        cells[i].textContent=ai;
+        let evalVal=minimax(cells, depth+1, false);
+        cells[i].textContent='';
+        maxEval=Math.max(maxEval, evalVal);
+      }
+    }
+    return maxEval;
+  } else {
+    let minEval=Infinity;
+    for(let i=0;i<9;i++){
+      if(cells[i].textContent===''){
+        cells[i].textContent=player;
+        let evalVal=minimax(cells, depth+1, true);
+        cells[i].textContent='';
+        minEval=Math.min(minEval, evalVal);
+      }
+    }
+    return minEval;
+  }
+}
+
+// Confetti animation
+function showConfetti(){
+  for(let i=0;i<30;i++){
+    const c = document.createElement('div');
+    c.classList.add('confetti');
+    c.style.left = Math.random()*window.innerWidth + 'px';
+    c.style.background = `hsl(${Math.random()*360}, 100%, 50%)`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 1000);
+  }
+}
+
+resetBtn.addEventListener('click', ()=>{
+  score={wins:0, losses:0, draws:0};
+  level=1;
+  updateScoreboard();
+  createBoard();
+});
+
+createBoard();
+updateScoreboard();
+</script>
+</body>
+</html>
