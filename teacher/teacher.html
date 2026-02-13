@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +23,7 @@
             padding: 20px;
         }
 
-        
+
 
         .container {
             max-width: 1200px;
@@ -123,8 +124,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .content-section.active {
@@ -442,8 +450,34 @@
             background-color: #616188;
             color: white;
         }
+
+        .btn-logout{
+             background: linear-gradient(135deg, #ff4b2b, #ff416c);
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-top: 25px;
+  }
+
+  .btn-logout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  }
+
+  .btn-logout:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+
+        }
     </style>
 </head>
+
 <body>
 
     <!-- Language Selector -->
@@ -463,7 +497,8 @@
 
         <nav>
             <a href="#" class="nav-item" data-target="home"><i class="fas fa-home"></i> HOME</a>
-            <a href="#" class="nav-item active" data-target="dashboard"><i class="fas fa-tachometer-alt"></i> DASHBOARD</a>
+            <a href="#" class="nav-item active" data-target="dashboard"><i class="fas fa-tachometer-alt"></i>
+                DASHBOARD</a>
             <a href="#" class="nav-item" data-target="report"><i class="fas fa-chart-bar"></i> REPORT</a>
             <a href="#" class="nav-item" data-target="logout"><i class="fas fa-sign-out-alt"></i> LOGOUT</a>
         </nav>
@@ -480,7 +515,7 @@
         <div id="dashboard" class="content-section active">
             <h2>Student Management</h2>
             <p>Select a grade to view students</p>
-            
+
             <div class="grades-container">
                 <button class="grade-btn active" data-grade="6">Grade 6</button>
                 <button class="grade-btn" data-grade="7">Grade 7</button>
@@ -490,11 +525,11 @@
                 <button class="grade-btn" data-grade="10">Grade 11</button>
                 <button class="grade-btn" data-grade="10">Grade 12</button>
             </div>
-            
+
             <div class="students-grid">
                 <!-- Student cards will be generated here -->
             </div>
-            
+
             <!-- Student Progress Section (initially hidden) -->
             <div id="student-progress" class="progress-section" style="display: none;">
                 <div class="progress-header">
@@ -503,7 +538,7 @@
                         <i class="fas fa-arrow-left"></i> Back to Students
                     </button>
                 </div>
-                
+
                 <div class="progress-grid">
                     <div class="progress-subject science">
                         <div class="subject-header">
@@ -542,7 +577,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="chart-container">
                     <canvas id="progress-chart"></canvas>
                 </div>
@@ -553,7 +588,7 @@
         <div id="report" class="content-section">
             <h2>Class Performance Reports</h2>
             <p>Analyze overall class performance and identify problem areas</p>
-            
+
             <div class="report-options">
                 <div class="report-option active" data-report="performance">
                     <i class="fas fa-chart-bar"></i>
@@ -566,7 +601,7 @@
                     <p>Identify learning challenges</p>
                 </div>
             </div>
-            
+
             <!-- Performance Report -->
             <div id="performance-report" class="report-content">
                 <div class="grades-container">
@@ -576,18 +611,19 @@
                     <button class="grade-btn" data-grade="9">Grade 9</button>
                     <button class="grade-btn" data-grade="10">Grade 10</button>
                 </div>
-                
+
                 <div class="chart-container">
                     <canvas id="performance-chart"></canvas>
                 </div>
             </div>
-            
+
             <!-- Insights Report -->
             <div id="insights-report" class="report-content" style="display: none;">
                 <div class="insight-card">
                     <h3><i class="fas fa-exclamation-circle"></i> Coordinate Geometry Challenges</h3>
-                    <p>Based on student performance in the Coordinates game, the following concepts are proving difficult:</p>
-                    
+                    <p>Based on student performance in the Coordinates game, the following concepts are proving
+                        difficult:</p>
+
                     <ul class="problem-list">
                         <li>
                             <span class="problem-name">Plotting points in all four quadrants</span>
@@ -607,7 +643,7 @@
                         </li>
                     </ul>
                 </div>
-                
+
                 <div class="insight-card">
                     <h3><i class="fas fa-lightbulb"></i> Recommended Actions</h3>
                     <p>Based on the analysis, we recommend:</p>
@@ -626,7 +662,8 @@
             <div class="logout-confirm">
                 <h2><i class="fas fa-sign-out-alt"></i> Logout</h2>
                 <p>Are you sure you want to logout?</p>
-                <button class="btn-logout">Confirm Logout</button>
+                <button class="btn-logout" id="logoutBtn">Confirm Logout</button>
+
             </div>
         </div>
     </div>
@@ -661,21 +698,21 @@
             // Additional grades would be defined here...
         };
 
-        
+
         // Initialize the dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            
+        document.addEventListener('DOMContentLoaded', function () {
+
             // Navigation functionality
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item => {
-                item.addEventListener('click', function(e) {
+                item.addEventListener('click', function (e) {
                     e.preventDefault();
                     const target = this.getAttribute('data-target');
-                    
+
                     // Update active navigation
                     navItems.forEach(nav => nav.classList.remove('active'));
                     this.classList.add('active');
-                    
+
                     // Show the target section
                     document.querySelectorAll('.content-section').forEach(section => {
                         section.classList.remove('active');
@@ -683,39 +720,39 @@
                     document.getElementById(target).classList.add('active');
                 });
             });
-            
+
             // Load students for default grade (6)
             loadStudents(6);
-            
+
             // Grade selection functionality
             const gradeButtons = document.querySelectorAll('.grade-btn');
             gradeButtons.forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function () {
                     // Update active grade button
                     gradeButtons.forEach(btn => btn.classList.remove('active'));
                     this.classList.add('active');
-                    
+
                     const grade = this.getAttribute('data-grade');
                     loadStudents(grade);
                 });
             });
-            
+
             // Back to students button
-            document.getElementById('back-to-students').addEventListener('click', function() {
+            document.getElementById('back-to-students').addEventListener('click', function () {
                 document.getElementById('student-progress').style.display = 'none';
                 document.querySelector('.students-grid').style.display = 'grid';
             });
-            
+
             // Report options functionality
             const reportOptions = document.querySelectorAll('.report-option');
             reportOptions.forEach(option => {
-                option.addEventListener('click', function() {
+                option.addEventListener('click', function () {
                     // Update active report option
                     reportOptions.forEach(opt => opt.classList.remove('active'));
                     this.classList.add('active');
-                    
+
                     const reportType = this.getAttribute('data-report');
-                    
+
                     if (reportType === 'performance') {
                         document.getElementById('performance-report').style.display = 'block';
                         document.getElementById('insights-report').style.display = 'none';
@@ -727,21 +764,21 @@
                     }
                 });
             });
-            
+
             // Generate initial performance chart
             generatePerformanceChart(6);
         });
-        
+
         // Load students for a specific grade
         function loadStudents(grade) {
             const studentsGrid = document.querySelector('.students-grid');
             studentsGrid.innerHTML = '';
-            
+
             if (students[grade]) {
                 students[grade].forEach(student => {
-                    const averageScore = Math.round((student.scores.science + student.scores.technology + 
-                                                  student.scores.engineering + student.scores.math) / 4);
-                    
+                    const averageScore = Math.round((student.scores.science + student.scores.technology +
+                        student.scores.engineering + student.scores.math) / 4);
+
                     const card = document.createElement('div');
                     card.className = 'student-card';
                     card.innerHTML = `
@@ -750,51 +787,51 @@
                         <div class="student-id">Grade ${grade}, ID: ${String(student.id).padStart(4, '0')}</div>
                         <div class="student-score">${averageScore}%</div>
                     `;
-                    
+
                     // Add click event to show student progress
                     card.addEventListener('click', () => {
                         showStudentProgress(student, grade);
                     });
-                    
+
                     studentsGrid.appendChild(card);
                 });
             }
         }
-        
+
         // Show student progress
         function showStudentProgress(student, grade) {
             document.querySelector('.students-grid').style.display = 'none';
             document.getElementById('student-progress').style.display = 'block';
-            
+
             // Update student name
             document.getElementById('student-name').textContent = student.name;
-            
+
             // Update progress bars
             document.querySelector('.science .subject-score').textContent = student.scores.science + '%';
             document.querySelector('.science .progress-fill').style.width = student.scores.science + '%';
-            
+
             document.querySelector('.technology .subject-score').textContent = student.scores.technology + '%';
             document.querySelector('.technology .progress-fill').style.width = student.scores.technology + '%';
-            
+
             document.querySelector('.engineering .subject-score').textContent = student.scores.engineering + '%';
             document.querySelector('.engineering .progress-fill').style.width = student.scores.engineering + '%';
-            
+
             document.querySelector('.math .subject-score').textContent = student.scores.math + '%';
             document.querySelector('.math .progress-fill').style.width = student.scores.math + '%';
-            
+
             // Generate progress chart
             generateProgressChart(student);
         }
-        
+
         // Generate progress chart for a student
         function generateProgressChart(student) {
             const ctx = document.getElementById('progress-chart').getContext('2d');
-            
+
             // Destroy existing chart if it exists
             if (window.progressChart) {
                 window.progressChart.destroy();
             }
-            
+
             // Create new chart
             window.progressChart = new Chart(ctx, {
                 type: 'line',
@@ -869,23 +906,23 @@
                 }
             });
         }
-        
+
         // Generate performance chart for a grade
         function generatePerformanceChart(grade) {
             const ctx = document.getElementById('performance-chart').getContext('2d');
-            
+
             // Destroy existing chart if it exists
             if (window.performanceChart) {
                 window.performanceChart.destroy();
             }
-            
+
             // Prepare data for chart
             const studentNames = students[grade].map(student => student.name);
-            const averageScores = students[grade].map(student => 
-                Math.round((student.scores.science + student.scores.technology + 
-                           student.scores.engineering + student.scores.math) / 4)
+            const averageScores = students[grade].map(student =>
+                Math.round((student.scores.science + student.scores.technology +
+                    student.scores.engineering + student.scores.math) / 4)
             );
-            
+
             // Create new chart
             window.performanceChart = new Chart(ctx, {
                 type: 'bar',
@@ -933,6 +970,13 @@
                 }
             });
         }
+
+    document.getElementById("logoutBtn").addEventListener("click", function() {
+window.location.href = "../index.html";  });
+
+
+        
     </script>
 </body>
+
 </html>
