@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="title">EduRoots</title>
+    <link rel="stylesheet" href="sample.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Simple Dashboard Styles */
+        #dashboard {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        #dashboard h2 {
+            margin-bottom: 20px;
+            color: #4e54c8;
+        }
+        #dashboard canvas {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stars"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+
+    <div id="headings">
+        <h1 class="main-heading" data-key="main-heading">EduRoots</h1>
+        <h3 class="sub-heading" data-key="sub-heading">“Where education meets fun.”</h3>
+    </div>
+
+    <!-- 🌍 Language Selector -->
+    <select id="languageSwitcher">
+        <option value="en">English</option>
+        <option value="hi">हिंदी</option>
+        <option value="or">Odia</option>
+    </select>
+
+    <div class="nav">
+        <nav>
+            <a href="#" class="nav-item" data-key="nav-home" id="homeLink">HOME</a>
+            <a href="#" class="nav-item" data-key="nav-games" id="gamesLink">GAMES</a>
+            <a href="#" class="nav-item" data-key="nav-dashboard" id="dashboardLink">DASHBOARD</a>
+            <a href="#" class="nav-item" data-key="nav-logout">LOGOUT</a>
+        </nav>
+    </div>
+
+    <!-- 🎮 Subjects Grid -->
+    <div class="grid-container" id="subjectsSection">
+        <!-- Science -->
+        <div class="subject science">
+            <h1>S</h1>
+            <h2 data-key="subject-science">Science</h2>
+            <p data-key="subject-science-desc">Explore fun experiments & quizzes.</p>
+            <a href="science.html" data-key="btn-play-science">Play Now</a>
+        </div>
+
+        <!-- Technology -->
+        <div class="subject technology">
+            <h1>T</h1>
+            <h2 data-key="subject-technology">Technology</h2>
+            <p data-key="subject-technology-desc">Learn coding & logical thinking.</p>
+            <a href="technology.html" data-key="btn-play-technology">Play Now</a>
+        </div>
+
+        <!-- Engineering -->
+        <div class="subject engineering">
+            <h1>E</h1>
+            <h2 data-key="subject-engineering">Engineering</h2>
+            <p data-key="subject-engineering-desc">Build, create & solve problems.</p>
+            <a href="engineering.html" data-key="btn-play-engineering">Play Now</a>
+        </div>
+
+        <!-- Math -->
+        <div class="subject math">
+            <h1>M</h1>
+            <h2 data-key="subject-math">Math</h2>
+            <p data-key="subject-math-desc">Play with numbers & puzzles.</p>
+            <a href="math.html" data-key="btn-play-math">Play Now</a>
+        </div>
+    </div>
+
+    <!-- 📊 Student Dashboard Section -->
+    <div id="dashboard">
+        <h2>📊 Student Dashboard Report</h2>
+        <p><strong>Name:</strong> John Doe | <strong>Class:</strong> 8th Grade | <strong>Roll No:</strong> 23</p>
+        <canvas id="marksChart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- 📌 Language Switcher Script -->
+    <script src="lang.js"></script>
+
+    <script>
+        // Handle Dashboard Navigation
+        const dashboardLink = document.getElementById("dashboardLink");
+        const subjectsSection = document.getElementById("subjectsSection");
+        const dashboardSection = document.getElementById("dashboard");
+        const homeLink = document.getElementById("homeLink");
+
+        dashboardLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            subjectsSection.style.display = "none"; // hide subjects grid
+            dashboardSection.style.display = "block"; // show dashboard
+        });
+
+        homeLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            subjectsSection.style.display = "grid"; // show subjects
+            dashboardSection.style.display = "none"; // hide dashboard
+        });
+
+        // Chart.js Student Marks
+        const ctx = document.getElementById('marksChart').getContext('2d');
+        const marksChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Science', 'Technology', 'Engineering', 'Math'],
+                datasets: [{
+                    label: 'Marks Obtained',
+                    data: [85, 78, 92, 74],
+                    backgroundColor: [
+                        '#4e54c8',
+                        '#8f94fb',
+                        '#fdbb2d',
+                        '#f46b45',
+                        '#2ecc71'
+                    ],
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

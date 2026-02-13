@@ -1,156 +1,670 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-key="title">EduRoots</title>
-    <link rel="stylesheet" href="sample.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>EduRoots - Interactive Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        /* Simple Dashboard Styles */
-        #dashboard {
-            display: none;
-            text-align: center;
-            padding: 40px;
-            background: white;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+background: linear-gradient(to bottom, #43cea2, #185a9d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            width: 900px;
+            height: 550px;
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 20px;
-            margin: 20px auto;
-            max-width: 800px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 10px solid black;
         }
-        #dashboard h2 {
+
+        .welcome-section {
+            flex: 1;
+background: linear-gradient(to bottom right, #11998e, #38ef7d);
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-section h1 {
+            margin-top: 30px;
+            font-size: 2.8rem;
             margin-bottom: 20px;
-            color: #4e54c8;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            z-index: 2;
         }
-        #dashboard canvas {
+
+        .welcome-section p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            z-index: 2;
+        }
+
+        .welcome-section img {
+            max-width: 100%;
             margin-top: 20px;
+            border-radius: 20px;
+            object-fit: cover;
+            z-index: 2;
+            transition: transform 0.5s ease;
+        }
+
+        .welcome-section img:hover {
+            transform: scale(1.05);
+        }
+
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.3);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+            }
+        }
+
+        .login-section {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .login-section h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4e54c8;
+            font-size: 2rem;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            color: #4e54c8;
+            font-weight: 800;
+        }
+
+        .logo span {
+            color: #fdbb2d;
+        }
+
+        .login-options {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .login-option {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .teacher-option:hover {
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            color: white;
+        }
+
+        .student-option:hover {
+            background: linear-gradient(to right, #fdbb2d, #f46b45);
+            color: white;
+        }
+
+        .icon-container {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+            font-size: 1.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .login-option:hover .icon-container {
+            transform: scale(1.1);
+        }
+
+        .teacher-icon {
+            background: #4e54c8;
+            color: white;
+        }
+
+        .student-icon {
+            background: #fdbb2d;
+            color: white;
+        }
+
+        .option-text h3 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .option-text p {
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .login-option:hover .option-text p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        /* Login Form Styles */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #23b386;
+        }
+
+        .form-group input {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #4e54c8;
+            box-shadow: 0 0 0 3px rgba(78, 84, 200, 0.2);
+            outline: none;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #777;
+        }
+
+        .login-button {
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+
+        .login-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            color: #4e54c8;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            text-decoration: underline;
+        }
+
+        /* Particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float-particle 15s infinite linear;
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #4e54c8;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-
 <body>
-    <div class="stars"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
+    <div id="root"></div>
 
-    <div id="headings">
-        <h1 class="main-heading" data-key="main-heading">EduRoots</h1>
-        <h3 class="sub-heading" data-key="sub-heading">“Where education meets fun.”</h3>
-    </div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-    <!-- 🌍 Language Selector -->
-    <select id="languageSwitcher">
-        <option value="en">English</option>
-        <option value="hi">हिंदी</option>
-        <option value="or">Odia</option>
-    </select>
-
-    <div class="nav">
-        <nav>
-            <a href="#" class="nav-item" data-key="nav-home" id="homeLink">HOME</a>
-            <a href="#" class="nav-item" data-key="nav-games" id="gamesLink">GAMES</a>
-            <a href="#" class="nav-item" data-key="nav-dashboard" id="dashboardLink">DASHBOARD</a>
-            <a href="#" class="nav-item" data-key="nav-logout">LOGOUT</a>
-        </nav>
-    </div>
-
-    <!-- 🎮 Subjects Grid -->
-    <div class="grid-container" id="subjectsSection">
-        <!-- Science -->
-        <div class="subject science">
-            <h1>S</h1>
-            <h2 data-key="subject-science">Science</h2>
-            <p data-key="subject-science-desc">Explore fun experiments & quizzes.</p>
-            <a href="science.html" data-key="btn-play-science">Play Now</a>
-        </div>
-
-        <!-- Technology -->
-        <div class="subject technology">
-            <h1>T</h1>
-            <h2 data-key="subject-technology">Technology</h2>
-            <p data-key="subject-technology-desc">Learn coding & logical thinking.</p>
-            <a href="technology.html" data-key="btn-play-technology">Play Now</a>
-        </div>
-
-        <!-- Engineering -->
-        <div class="subject engineering">
-            <h1>E</h1>
-            <h2 data-key="subject-engineering">Engineering</h2>
-            <p data-key="subject-engineering-desc">Build, create & solve problems.</p>
-            <a href="engineering.html" data-key="btn-play-engineering">Play Now</a>
-        </div>
-
-        <!-- Math -->
-        <div class="subject math">
-            <h1>M</h1>
-            <h2 data-key="subject-math">Math</h2>
-            <p data-key="subject-math-desc">Play with numbers & puzzles.</p>
-            <a href="math.html" data-key="btn-play-math">Play Now</a>
-        </div>
-    </div>
-
-    <!-- 📊 Student Dashboard Section -->
-    <div id="dashboard">
-        <h2>📊 Student Dashboard Report</h2>
-        <p><strong>Name:</strong> John Doe | <strong>Class:</strong> 8th Grade | <strong>Roll No:</strong> 23</p>
-        <canvas id="marksChart" width="400" height="200"></canvas>
-    </div>
-
-    <!-- 📌 Language Switcher Script -->
-    <script src="lang.js"></script>
-
-    <script>
-        // Handle Dashboard Navigation
-        const dashboardLink = document.getElementById("dashboardLink");
-        const subjectsSection = document.getElementById("subjectsSection");
-        const dashboardSection = document.getElementById("dashboard");
-        const homeLink = document.getElementById("homeLink");
-
-        dashboardLink.addEventListener("click", (e) => {
-            e.preventDefault();
-            subjectsSection.style.display = "none"; // hide subjects grid
-            dashboardSection.style.display = "block"; // show dashboard
-        });
-
-        homeLink.addEventListener("click", (e) => {
-            e.preventDefault();
-            subjectsSection.style.display = "grid"; // show subjects
-            dashboardSection.style.display = "none"; // hide dashboard
-        });
-
-        // Chart.js Student Marks
-        const ctx = document.getElementById('marksChart').getContext('2d');
-        const marksChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Science', 'Technology', 'Engineering', 'Math'],
-                datasets: [{
-                    label: 'Marks Obtained',
-                    data: [85, 78, 92, 74],
-                    backgroundColor: [
-                        '#4e54c8',
-                        '#8f94fb',
-                        '#fdbb2d',
-                        '#f46b45',
-                        '#2ecc71'
-                    ],
-                    borderRadius: 10
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100
-                    }
+        // Floating Icons Component for Background
+        const FloatingIcons = () => {
+            const [icons, setIcons] = useState([]);
+            
+            useEffect(() => {
+                const iconsData = [];
+                for (let i = 0; i < 15; i++) {
+                    iconsData.push({
+                        id: i,
+                        top: Math.random() * 100,
+                        left: Math.random() * 100,
+                        animationDelay: Math.random() * 15 + 's',
+                        fontSize: Math.random() * 20 + 14 + 'px',
+                        icon: Math.random() > 0.5 ? 'fa-book' : 'fa-graduation-cap'
+                    });
                 }
-            }
-        });
+                setIcons(iconsData);
+            }, []);
+            
+            return (
+                <div className="floating-icons">
+                    {icons.map(icon => (
+                        <i 
+                            key={icon.id}
+                            className={`fas ${icon.icon} floating-icon`}
+                            style={{
+                                top: `${icon.top}%`,
+                                left: `${icon.left}%`,
+                                animationDelay: icon.animationDelay,
+                                fontSize: icon.fontSize
+                            }}
+                        ></i>
+                    ))}
+                </div>
+            );
+        };
+
+        // Particles Component for Login Section
+        const Particles = () => {
+            const [particles, setParticles] = useState([]);
+            
+            useEffect(() => {
+                const particlesData = [];
+                for (let i = 0; i < 20; i++) {
+                    particlesData.push({
+                        id: i,
+                        top: Math.random() * 100,
+                        left: Math.random() * 100,
+                        size: Math.random() * 10 + 5 + 'px',
+                        animationDelay: Math.random() * 15 + 's',
+                        animationDuration: Math.random() * 10 + 15 + 's'
+                    });
+                }
+                setParticles(particlesData);
+            }, []);
+            
+            return (
+                <div className="particles">
+                    {particles.map(particle => (
+                        <div 
+                            key={particle.id}
+                            className="particle"
+                            style={{
+                                top: `${particle.top}%`,
+                                left: `${particle.left}%`,
+                                width: particle.size,
+                                height: particle.size,
+                                animationDelay: particle.animationDelay,
+                                animationDuration: particle.animationDuration
+                            }}
+                        ></div>
+                    ))}
+                </div>
+            );
+        };
+
+        // Teacher Login Form Component
+        const TeacherLoginForm = ({ onBack }) => {
+            const [showPassword, setShowPassword] = useState(false);
+            const [credentials, setCredentials] = useState({
+                id: '',
+                password: ''
+            });
+            const [isLoading, setIsLoading] = useState(false);
+            
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                setIsLoading(true);
+                
+                // Simulate authentication process
+                setTimeout(() => {
+                    setIsLoading(false);
+                    // Redirect to teacher.html after successful login
+                    window.location.href = 'teacher/teacher.html';
+                }, 1500);
+            };
+            
+            const handleChange = (e) => {
+                setCredentials({
+                    ...credentials,
+                    [e.target.name]: e.target.value
+                });
+            };
+            
+            return (
+                <div>
+                    <h2>Teacher Login</h2>
+                    <form className="login-form" onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="teacherId">Teacher ID</label>
+                            <input
+                                type="text"
+                                id="teacherId"
+                                name="id"
+                                placeholder="Enter your teacher ID"
+                                value={credentials.id}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        
+                        <div className="form-group">
+                            <label htmlFor="password">Password</label>
+                            <div className="password-container">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    id="password"
+                                    name="password"
+                                    placeholder="Enter your password"
+                                    value={credentials.password}
+                                    onChange={handleChange}
+                                    required
+                                />
+                                <span 
+                                    className="toggle-password"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" className="login-button" disabled={isLoading}>
+                            {isLoading ? <div className="spinner"></div> : 'Login'}
+                        </button>
+                        
+                        <div className="back-button" onClick={onBack}>
+                            <i className="fas fa-arrow-left"></i> Back to Login Options
+                        </div>
+                    </form>
+                </div>
+            );
+        };
+
+        // Student Login Form Component
+        const StudentLoginForm = ({ onBack }) => {
+            const [showPassword, setShowPassword] = useState(false);
+            const [credentials, setCredentials] = useState({
+                username: '',
+                password: ''
+            });
+            const [isLoading, setIsLoading] = useState(false);
+            
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                setIsLoading(true);
+                
+                // Simulate authentication process
+                setTimeout(() => {
+                    setIsLoading(false);
+                    // Redirect to sample.html after successful login
+                    window.location.href = 'sample.html';
+                }, 1500);
+            };
+            
+            const handleChange = (e) => {
+                setCredentials({
+                    ...credentials,
+                    [e.target.name]: e.target.value
+                });
+            };
+            
+            return (
+                <div>
+                    <h2>Student Login</h2>
+                    <form className="login-form" onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="username">Username</label>
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                placeholder="Enter your username"
+                                value={credentials.username}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        
+                        <div className="form-group">
+                            <label htmlFor="studentPassword">Password</label>
+                            <div className="password-container">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    id="studentPassword"
+                                    name="password"
+                                    placeholder="Enter your password"
+                                    value={credentials.password}
+                                    onChange={handleChange}
+                                    required
+                                />
+                                <span 
+                                    className="toggle-password"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" className="login-button" disabled={isLoading}>
+                            {isLoading ? <div className="spinner"></div> : 'Login'}
+                        </button>
+                        
+                        <div className="back-button" onClick={onBack}>
+                            <i className="fas fa-arrow-left"></i> Back to Login Options
+                        </div>
+                    </form>
+                </div>
+            );
+        };
+
+        // Main App Component
+        const EduRootsLogin = () => {
+            const [activeForm, setActiveForm] = useState(null);
+            
+            return (
+                <div className="container">
+                    <div className="welcome-section">
+                        <h1>EduRoots</h1>
+                        <p>Where education meets fun. Our platform helps students learn STEM subjects through interactive games and helps teachers track progress effectively.</p>
+                        <p>Select your login option to get started on your educational journey!</p>
+                        <img 
+                            src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" 
+                            alt="Students learning"
+                        />
+                        <FloatingIcons />
+                    </div>
+                    
+                    <div className="login-section">
+                        <Particles />
+                        <div className="logo">
+                            <h1>Edu<span>Roots</span></h1>
+                        </div>
+                        
+                        {activeForm === null ? (
+                            <>
+                                <h2>Login to Your Account</h2>
+                                
+                                <div className="login-options">
+                                    <div 
+                                        className="login-option teacher-option"
+                                        onClick={() => setActiveForm('teacher')}
+                                    >
+                                        <div className="icon-container teacher-icon">
+                                            <i className="fas fa-chalkboard-teacher"></i>
+                                        </div>
+                                        <div className="option-text">
+                                            <h3>Teacher Login</h3>
+                                            <p>Access your teacher dashboard and track student progress</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div 
+                                        className="login-option student-option"
+                                        onClick={() => setActiveForm('student')}
+                                    >
+                                        <div className="icon-container student-icon">
+                                            <i className="fas fa-user-graduate"></i>
+                                        </div>
+                                        <div className="option-text">
+                                            <h3>Student Login</h3>
+                                            <p>Access your student dashboard and play educational games</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        ) : activeForm === 'teacher' ? (
+                            <TeacherLoginForm onBack={() => setActiveForm(null)} />
+                        ) : (
+                            <StudentLoginForm onBack={() => setActiveForm(null)} />
+                        )}
+                        
+                        <div className="footer">
+                            <p>© 2023 EduRoots - Gamified Learning Platform</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Render the app
+        ReactDOM.createRoot(document.getElementById('root')).render(<EduRootsLogin />);
     </script>
 </body>
 </html>
