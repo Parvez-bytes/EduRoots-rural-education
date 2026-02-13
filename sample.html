@@ -17,12 +17,14 @@
             border-radius: 20px;
             margin: 20px auto;
             max-width: 800px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
+
         #dashboard h2 {
             margin-bottom: 20px;
             color: #4e54c8;
         }
+
         #dashboard canvas {
             margin-top: 20px;
         }
@@ -54,7 +56,7 @@
             <a href="#" class="nav-item" data-key="nav-home" id="homeLink">HOME</a>
             <a href="#" class="nav-item" data-key="nav-games" id="gamesLink">GAMES</a>
             <a href="#" class="nav-item" data-key="nav-dashboard" id="dashboardLink">DASHBOARD</a>
-            <a href="#" class="nav-item" data-key="nav-logout">LOGOUT</a>
+            <a href="#" id="logout-btn" class="nav-item" data-key="nav-logout" onclick="logout()">LOGOUT</a>
         </nav>
     </div>
 
@@ -151,6 +153,12 @@
                 }
             }
         });
+        function logout() {
+            // Clear session or authentication data here
+            window.location.href = "index.html";
+        }
+
     </script>
 </body>
+
 </html>
